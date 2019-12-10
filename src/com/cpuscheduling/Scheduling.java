@@ -57,52 +57,58 @@ public class Scheduling {
             System.out.println(statistics.get(i).name + " " + statistics.get(i).waitingTime + " " + statistics.get(i).turnaroundTime);
         }
     }
-
-
     public static void Priority(ArrayList<Process> arr) {
-        ArrayList<Process> result = new ArrayList<>();
-        int temp = 0, timer = 0;
-        ArrayList<Process> arrived = new ArrayList<>();
         Collections.sort(arr, Comparator.comparing(process -> process.arrivalTime));
-        boolean firstTime = true;
-        Process mover = null;
-        while (arr.size() > 0) {
-            arrived.clear();
-            if (firstTime) {
-                for (int i = 0; i < arr.size(); i++) {
-                    if (arr.get(0).arrivalTime == arr.get(i).arrivalTime)
-                        arrived.add(arr.get(i));
-                    else break;
-                }
-                firstTime = false;
-            } else {
-                for (int i = 0; i < arr.size(); i++) {
-                    if (arr.get(i).arrivalTime - temp <= 0) {
-                        arrived.add(arr.get(i));
-                    }
-                }
-            }
-            Collections.sort(arrived, Comparator.comparing(process -> process.priority));
-
-            for (int i = 1; i < arrived.size(); i++) {
-                if (arrived.get(i).priority > arrived.get(0).priority)
-                    arrived.remove(i--);
-            }
-            Collections.sort(arrived, Comparator.comparing(process -> process.burstTime));
-            temp += arrived.get(0).burstTime;
-
-            mover = new Process(arrived.get(0).name, arrived.get(0).burstTime, arrived.get(0).arrivalTime, 0, 0,
-                    timer - arrived.get(0).arrivalTime, (arrived.get(0).burstTime + (timer - arrived.get(0).arrivalTime)));
-            timer += arrived.get(0).burstTime;
-            result.add(mover);
-            arr.remove(arr.indexOf(arrived.get(0)));
+        ArrayList<Process> statistics = new ArrayList<>();
+        for (int i = 0; i < arr.size(); i++) {
+            statistics.add(arr.get(i).forStat);
         }
-        for (int i = 0; i < result.size(); i++)
-            System.out.println(result.get(i).name + "   " + result.get(i).waitingTime + "   " + result.get(i).turnaroundTime);
+        ArrayList<Process> readyQueue = new ArrayList<>();
+        Process currProcess;
+        readyQueue.add(arr.get(0));
+        currProcess = readyQueue.get(0);
+        arr.remove(0);
+        for (int i = 0; i < arr.size(); i++) {
+            if (arr.get(i).arrivalTime == currProcess.arrivalTime) {
+                readyQueue.add(arr.get(i));
+                arr.remove(i--);
+            }
+        }
+        Collections.sort(readyQueue, Comparator.comparing(process -> process.priority));
+        currProcess = readyQueue.get(0);
+        int totalTime = currProcess.arrivalTime;
+        Rang rang = new Rang();
+        while (readyQueue.size() > 0) {
+            rang.low = totalTime;
+            totalTime += currProcess.burstTime;
+            rang.high = totalTime;
+            for (int i = 0; i < readyQueue.size(); i++) {
+                if (currProcess != readyQueue.get(i))
+                    readyQueue.get(i).forStat.waitingTime += currProcess.burstTime;
+            }
+            currProcess.chartTable.Rang_Arr.add(rang);
+            rang = new Rang();
+            currProcess.burstTime = 0;
+            readyQueue.remove(currProcess);
+            for (int i = 0; i < arr.size(); i++) {
+                if (arr.get(i).arrivalTime <= totalTime) {
+                    readyQueue.add(arr.get(i));
+                    arr.remove(i--);
+                } else break;
+            }
+            Collections.sort(readyQueue, Comparator.comparing(process -> process.priority));
+            if (readyQueue.size() != 0)
+                currProcess = readyQueue.get(0);
+        }
+        for (int i = 0; i < statistics.size(); i++) {
+            statistics.get(i).turnaroundTime = statistics.get(i).waitingTime + statistics.get(i).burstTime;
+        }
+        for (int i = 0; i < statistics.size(); i++) {
+            System.out.println(statistics.get(i).name + " " + statistics.get(i).waitingTime + " " + statistics.get(i).turnaroundTime);
+        }
     }
 
     public static void SRTF(ArrayList<Process> arr) {
-
         Collections.sort(arr, Comparator.comparing(process -> process.arrivalTime));
         ArrayList<Process> statistics = new ArrayList<>();
         for (int i = 0; i < arr.size(); i++) {
@@ -127,17 +133,13 @@ public class Scheduling {
         Boolean madeSwitch;
         while (readyQueue.size() > 0) {
             madeSwitch=false;
-            for (int i = 0; i < readyQueue.size(); i++) {
-                if (currProcess != readyQueue.get(i)) {
-                    readyQueue.get(i).forStat.waitingTime++;
-                }
-            }
             totalTime++;
             currProcess.burstTime--;
             if (currProcess.burstTime == 0) {
                 madeSwitch=true;
                 rang.high = totalTime;
                 currProcess.chartTable.Rang_Arr.add(rang);
+                currProcess.forStat.waitingTime=totalTime-currProcess.forStat.burstTime-currProcess.arrivalTime;
                 readyQueue.remove(currProcess);
 
             }
@@ -156,7 +158,7 @@ public class Scheduling {
                     currProcess.chartTable.Rang_Arr.add(rang);
 
                     for (int i = 0; i < arr.size(); i++) {
-                        if (arr.get(i).arrivalTime <= totalTime) {
+                        if (arr.get(i).arrivalTime <= totalTime+1) {
                             readyQueue.add(arr.get(i));
                             arr.remove(i--);
                         } else break;
@@ -170,12 +172,7 @@ public class Scheduling {
                 totalTime++;
                 rang = new Rang();
                 rang.low = totalTime;
-                for (int i = 0; i < readyQueue.size(); i++) {
-                        readyQueue.get(i).forStat.waitingTime++;
-                }
             }
-
-
         }
         for (int i = 0; i < statistics.size(); i++) {
             statistics.get(i).turnaroundTime = statistics.get(i).waitingTime + statistics.get(i).burstTime;
