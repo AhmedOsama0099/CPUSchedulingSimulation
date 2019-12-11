@@ -108,7 +108,6 @@ public class Scheduling {
             System.out.println(statistics.get(i).name + " " + statistics.get(i).waitingTime + " " + statistics.get(i).turnaroundTime);
         }
     }
-
     public static void SRTF(ArrayList<Process> arr) {
         Collections.sort(arr, Comparator.comparing(process -> process.arrivalTime));
         ArrayList<Process> statistics = new ArrayList<>();
@@ -186,10 +185,12 @@ public class Scheduling {
     public static void AG(ArrayList<Process> arr) {
         ArrayList<Process> arrived=new ArrayList();
         ArrayList<Process> result=new ArrayList();
-        //ArrayList<ChartTable> Table=new ArrayList();
+        Rang rang = new Rang();
+        ArrayList<ChartTable> Table=new ArrayList();
         for (int i = 0; i<arr.size(); i++) result.add(new Process(arr.get(i).name,arr.get(i).burstTime,arr.get(i).arrivalTime,arr.get(i).priority,arr.get(i).quantumTime));
         boolean firstTime=true;
         int totalTime=0;
+        rang.low=totalTime;
         ArrayList<Process>queue=new ArrayList<>();
         ArrayList<Process>dieList=new ArrayList<>();
         while (arr.size() > 0) {
@@ -215,7 +216,7 @@ public class Scheduling {
             while(i<=currProcess.quantumTime){
                 arrived=update(arr,totalTime);
                 if (nonPrimitative) {
-                    if(currProcess.burstTime-Math.ceil(currProcess.quantumTime/2.0)<=0){
+                    if(currProcess.burstTime-Math.ceil(currProcess.quantumTime/2.0)<=0){ // finish
                         /////////////////////////////////////
                         System.out.print("Quantum (");
                         for(int j=0 ;j<result.size();j++){
@@ -230,6 +231,12 @@ public class Scheduling {
                         System.out.print(") "+ currProcess.name+" Running\n");
                         /////////////////////////////////////////////////////////
                         totalTime+=currProcess.burstTime;
+                        //////////
+                        rang.high=totalTime;
+                        currProcess.chartTable.Rang_Arr.add(rang);
+                        rang=new Rang();
+                        rang.low=totalTime;
+                        /////////////
                         currProcess.quantumTime=0;
                         currProcess.burstTime=0;
                         int indx=0;
@@ -271,7 +278,12 @@ public class Scheduling {
                 }
                 else if(!nonPrimitative){
                     if(currProcess.burstTime==0){//finish its all job
-
+                       /////////////////
+                        rang.high=totalTime;
+                        currProcess.chartTable.Rang_Arr.add(rang);
+                        rang=new Rang();
+                        rang.low=totalTime;
+                        //////////////////////////
                         arr.remove(currProcess);
                         arrived.remove(currProcess);
                         currProcess.quantumTime=0;
@@ -283,7 +295,14 @@ public class Scheduling {
                         currProcess.waitingTime=totalTime-result.get(indx).burstTime-currProcess.arrivalTime;dieList.add(currProcess);
                         currProcess.turnaroundTime=currProcess.waitingTime+result.get(indx).burstTime;
                         result.get(indx).quantumTime=0;
+
                         if(queue.isEmpty()) {
+                            //////////
+                            rang.high=totalTime;
+                            currProcess.chartTable.Rang_Arr.add(rang);
+                            rang=new Rang();
+                            rang.low=totalTime;
+                            //////////
                             currProcess = pickProcess(arr, totalTime);
                             break;
                         }
@@ -295,6 +314,12 @@ public class Scheduling {
                         continue;
                     }
                     if(i==currProcess.quantumTime){//finish quantum
+                        //////////
+                        rang.high=totalTime;
+                        currProcess.chartTable.Rang_Arr.add(rang);
+                        rang=new Rang();
+                        rang.low=totalTime;
+                        /////////
                         currProcess.quantumTime+= (int) Math.ceil(.1*(getMean(arr,totalTime)));
                         int indx=0;
                         for(int j=0 ;j<result.size();j++){
@@ -312,6 +337,12 @@ public class Scheduling {
                     Process tempProcess= pickProcess(arr,totalTime);
                     if(tempProcess!=null){
                         if(currProcess!=tempProcess){
+                            /////////////////
+                            rang.high=totalTime;
+                            currProcess.chartTable.Rang_Arr.add(rang);
+                            rang=new Rang();
+                            rang.low=totalTime;
+                            //////////////////
                             currProcess.quantumTime+=(currProcess.quantumTime-i);
                             /////////////////////////////////////////////////////
                             int indx=0;

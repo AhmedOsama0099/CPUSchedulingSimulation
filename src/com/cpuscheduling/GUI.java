@@ -38,6 +38,7 @@ public class GUI extends JFrame {
         btnActions();
 
 
+
     }
 
     private void btnActions() {
@@ -126,6 +127,28 @@ public class GUI extends JFrame {
                     chartTable.add(p.chartTable);
                 }
                 Scheduling.SRTF(processes);
+                CharAndStatistics charAndStatistics = new CharAndStatistics(chartTable);
+                charAndStatistics.setVisible(true);
+            }
+        });
+        AGbtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                processes.clear();
+                chartTable.clear();
+                for (int i = 0; i < tableModel.getRowCount(); i++) {
+                    Process p = new Process(tableModel.getValueAt(i, 0).toString(),
+                            Integer.parseInt(tableModel.getValueAt(i, 2).toString()),
+                            Integer.parseInt(tableModel.getValueAt(i, 1).toString()),
+                            Integer.parseInt(tableModel.getValueAt(i, 3).toString()),
+                            Integer.parseInt(tableModel.getValueAt(i, 4).toString())
+                    );
+
+                    processes.add(p);
+                    p.chartTable.color = tableModel.getValueAt(i, 5).toString();
+                    chartTable.add(p.chartTable);
+                }
+                Scheduling.AG(processes);
                 CharAndStatistics charAndStatistics = new CharAndStatistics(chartTable);
                 charAndStatistics.setVisible(true);
             }
