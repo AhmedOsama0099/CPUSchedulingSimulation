@@ -3,7 +3,7 @@ package com.cpuscheduling;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
+//asasdfasdfgaksjdskf
 public class Scheduling {
 
     public static void SJF(ArrayList<Process> arr) {
@@ -32,10 +32,11 @@ public class Scheduling {
             rang.low = totalTime;
             totalTime += currProcess.burstTime;
             rang.high = totalTime;
-            for (int i = 0; i < readyQueue.size(); i++) {
+            /*for (int i = 0; i < readyQueue.size(); i++) {
                 if (currProcess != readyQueue.get(i))
                     readyQueue.get(i).forStat.waitingTime += currProcess.burstTime;
-            }
+            }*/
+            currProcess.waitingTime=totalTime-currProcess.forStat.burstTime-currProcess.arrivalTime;
             currProcess.chartTable.Rang_Arr.add(rang);
             rang = new Rang();
             currProcess.burstTime = 0;
@@ -58,11 +59,15 @@ public class Scheduling {
         }
     }
     public static void Priority(ArrayList<Process> arr) {
+        int avgPriority=0;
         Collections.sort(arr, Comparator.comparing(process -> process.arrivalTime));
+
         ArrayList<Process> statistics = new ArrayList<>();
         for (int i = 0; i < arr.size(); i++) {
+            avgPriority+=arr.get(i).priority;
             statistics.add(arr.get(i).forStat);
         }
+        avgPriority=avgPriority/arr.size();
         ArrayList<Process> readyQueue = new ArrayList<>();
         Process currProcess;
         readyQueue.add(arr.get(0));
@@ -82,10 +87,11 @@ public class Scheduling {
             rang.low = totalTime;
             totalTime += currProcess.burstTime;
             rang.high = totalTime;
-            for (int i = 0; i < readyQueue.size(); i++) {
+            /*for (int i = 0; i < readyQueue.size(); i++) {
                 if (currProcess != readyQueue.get(i))
                     readyQueue.get(i).forStat.waitingTime += currProcess.burstTime;
-            }
+            }*/
+            currProcess.forStat.waitingTime=totalTime-currProcess.forStat.burstTime-currProcess.arrivalTime;
             currProcess.chartTable.Rang_Arr.add(rang);
             rang = new Rang();
             currProcess.burstTime = 0;
