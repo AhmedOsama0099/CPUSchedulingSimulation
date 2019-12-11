@@ -3,7 +3,6 @@ package com.cpuscheduling;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-//asasdfasdfgaksjdskf
 public class Scheduling {
 
     public static void SJF(ArrayList<Process> arr) {
@@ -32,10 +31,6 @@ public class Scheduling {
             rang.low = totalTime;
             totalTime += currProcess.burstTime;
             rang.high = totalTime;
-            /*for (int i = 0; i < readyQueue.size(); i++) {
-                if (currProcess != readyQueue.get(i))
-                    readyQueue.get(i).forStat.waitingTime += currProcess.burstTime;
-            }*/
             currProcess.waitingTime=totalTime-currProcess.forStat.burstTime-currProcess.arrivalTime;
             currProcess.chartTable.Rang_Arr.add(rang);
             rang = new Rang();
@@ -87,15 +82,15 @@ public class Scheduling {
             rang.low = totalTime;
             totalTime += currProcess.burstTime;
             rang.high = totalTime;
-            /*for (int i = 0; i < readyQueue.size(); i++) {
-                if (currProcess != readyQueue.get(i))
-                    readyQueue.get(i).forStat.waitingTime += currProcess.burstTime;
-            }*/
             currProcess.forStat.waitingTime=totalTime-currProcess.forStat.burstTime-currProcess.arrivalTime;
             currProcess.chartTable.Rang_Arr.add(rang);
             rang = new Rang();
             currProcess.burstTime = 0;
             readyQueue.remove(currProcess);
+            for(int i=0;i<readyQueue.size();i++){
+                if(readyQueue.get(i).priority>=avgPriority)
+                    readyQueue.get(i).priority--;
+            }
             for (int i = 0; i < arr.size(); i++) {
                 if (arr.get(i).arrivalTime <= totalTime) {
                     readyQueue.add(arr.get(i));

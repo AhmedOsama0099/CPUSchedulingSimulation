@@ -37,9 +37,11 @@ public class GUI extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         btnActions();
 
+
     }
 
     private void btnActions() {
+
         removeRowButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -82,6 +84,28 @@ public class GUI extends JFrame {
                     }
                 });
 
+            }
+        });
+        prioritybtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                processes.clear();
+                chartTable.clear();
+                for (int i = 0; i < tableModel.getRowCount(); i++) {
+                    Process p = new Process(tableModel.getValueAt(i, 0).toString(),
+                            Integer.parseInt(tableModel.getValueAt(i, 2).toString()),
+                            Integer.parseInt(tableModel.getValueAt(i, 1).toString()),
+                            Integer.parseInt(tableModel.getValueAt(i, 3).toString()),
+                            Integer.parseInt(tableModel.getValueAt(i, 4).toString())
+                    );
+
+                    processes.add(p);
+                    p.chartTable.color = tableModel.getValueAt(i, 5).toString();
+                    chartTable.add(p.chartTable);
+                }
+                Scheduling.Priority(processes);
+                CharAndStatistics charAndStatistics = new CharAndStatistics(chartTable);
+                charAndStatistics.setVisible(true);
             }
         });
         SRTFbtn.addActionListener(new ActionListener() {
