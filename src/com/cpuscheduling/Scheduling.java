@@ -54,15 +54,12 @@ public class Scheduling {
         }
     }
     public static void Priority(ArrayList<Process> arr) {
-        int avgPriority=0;
         Collections.sort(arr, Comparator.comparing(process -> process.arrivalTime));
 
         ArrayList<Process> statistics = new ArrayList<>();
         for (int i = 0; i < arr.size(); i++) {
-            avgPriority+=arr.get(i).priority;
             statistics.add(arr.get(i).forStat);
         }
-        avgPriority=avgPriority/arr.size();
         ArrayList<Process> readyQueue = new ArrayList<>();
         Process currProcess;
         readyQueue.add(arr.get(0));
@@ -74,7 +71,7 @@ public class Scheduling {
                 arr.remove(i--);
             }
         }
-        Collections.sort(readyQueue, Comparator.comparing(process -> process.priority));
+        Collections.sort(readyQueue, Comparator.comparing((Process process) -> process.priority).thenComparing(process -> process.arrivalTime));
         currProcess = readyQueue.get(0);
         int totalTime = currProcess.arrivalTime;
         Rang rang = new Rang();
@@ -88,8 +85,9 @@ public class Scheduling {
             currProcess.burstTime = 0;
             readyQueue.remove(currProcess);
             for(int i=0;i<readyQueue.size();i++){
-                if(readyQueue.get(i).priority>=avgPriority)
-                    readyQueue.get(i).priority--;
+                if(readyQueue.get(i).arrivalTime<totalTime)
+                    if(readyQueue.get(i).priority!=0)
+                        readyQueue.get(i).priority--;
             }
             for (int i = 0; i < arr.size(); i++) {
                 if (arr.get(i).arrivalTime <= totalTime) {
@@ -97,7 +95,7 @@ public class Scheduling {
                     arr.remove(i--);
                 } else break;
             }
-            Collections.sort(readyQueue, Comparator.comparing(process -> process.priority));
+            Collections.sort(readyQueue, Comparator.comparing((Process process) -> process.priority).thenComparing(process -> process.arrivalTime));
             if (readyQueue.size() != 0)
                 currProcess = readyQueue.get(0);
         }
