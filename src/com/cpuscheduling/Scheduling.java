@@ -11,7 +11,6 @@ public class Scheduling {
     public static void SJF(ArrayList<Process> arr) {
         AGHistory="";
         Collections.sort(arr, Comparator.comparing(process -> process.arrivalTime));
-        //ArrayList<Process> statistics = new ArrayList<>();
         avg = 0;
         statistics.clear();
         for (int i = 0; i < arr.size(); i++) {
@@ -57,9 +56,6 @@ public class Scheduling {
             avg += statistics.get(i).waitingTime;
         }
         avg = avg / (double) statistics.size();
-       /* for (int i = 0; i < statistics.size(); i++) {
-            System.out.println(statistics.get(i).name + " " + statistics.get(i).waitingTime + " " + statistics.get(i).turnaroundTime);
-        }*/
     }
 
     public static void Priority(ArrayList<Process> arr) {
@@ -67,7 +63,6 @@ public class Scheduling {
         Collections.sort(arr, Comparator.comparing(process -> process.arrivalTime));
         avg = 0;
         statistics.clear();
-        // ArrayList<Process> statistics = new ArrayList<>();
         for (int i = 0; i < arr.size(); i++) {
             statistics.add(arr.get(i).forStat);
         }
@@ -115,15 +110,11 @@ public class Scheduling {
             avg += statistics.get(i).waitingTime;
         }
         avg = avg / (double) statistics.size();
-        /*for (int i = 0; i < statistics.size(); i++) {
-            System.out.println(statistics.get(i).name + " " + statistics.get(i).waitingTime + " " + statistics.get(i).turnaroundTime);
-        }*/
     }
 
     public static void SRTF(ArrayList<Process> arr) {
         AGHistory="";
         Collections.sort(arr, Comparator.comparing(process -> process.arrivalTime));
-        //ArrayList<Process> statistics = new ArrayList<>();
         avg = 0;
         statistics.clear();
         for (int i = 0; i < arr.size(); i++) {
@@ -194,10 +185,6 @@ public class Scheduling {
             avg += statistics.get(i).waitingTime;
         }
         avg = avg / (double) statistics.size();
-        /*for (int i = 0; i < statistics.size(); i++) {
-            System.out.println(statistics.get(i).name + " " + statistics.get(i).waitingTime + " " + statistics.get(i).turnaroundTime);
-        }*/
-
     }
 
     public static void AG(ArrayList<Process> arr) {
@@ -206,7 +193,6 @@ public class Scheduling {
         ArrayList<Process> result = new ArrayList();
         avg=0;
         Rang rang = new Rang();
-        //ArrayList<ChartTable> Table=new ArrayList();
         for (int i = 0; i < arr.size(); i++)
             result.add(new Process(arr.get(i).name, arr.get(i).burstTime, arr.get(i).arrivalTime, arr.get(i).priority, arr.get(i).quantumTime));
         boolean firstTime = true;
@@ -239,20 +225,17 @@ public class Scheduling {
                 if (nonPrimitative) {
                     if (currProcess.burstTime - Math.ceil(currProcess.quantumTime / 2.0) <= 0) { // finish
                         /////////////////////////////////////
-                        //System.out.print("Quantum (");
                         AGHistory+="Quantum (";
                         for (int j = 0; j < result.size(); j++) {
-                            if (j == result.size() - 1) /*System.out.print(result.get(j).quantumTime);*/AGHistory+=result.get(j).quantumTime;
-                            else /*System.out.print(result.get(j).quantumTime + ",");*/AGHistory+=result.get(j).quantumTime + ",";
+                            if (j == result.size() - 1)AGHistory+=result.get(j).quantumTime;
+                            else AGHistory+=result.get(j).quantumTime + ",";
                         }
-                        //System.out.print(") ->  ceil(50%) = (");
                         AGHistory+=") ->  ceil(50%) = (";
                         for (int j = 0; j < result.size(); j++) {
                             if (j == result.size() - 1)
-                                /*System.out.print((int) Math.ceil(result.get(j).quantumTime / 2.0));*/AGHistory+=(int) Math.ceil(result.get(j).quantumTime / 2.0);
-                            else /*System.out.print((int) Math.ceil(result.get(j).quantumTime / 2.0) + ",");*/AGHistory+=(int) Math.ceil(result.get(j).quantumTime / 2.0) + ",";
+                                AGHistory+=(int) Math.ceil(result.get(j).quantumTime / 2.0);
+                            else AGHistory+=(int) Math.ceil(result.get(j).quantumTime / 2.0) + ",";
                         }
-                        /*System.out.print(") " + currProcess.name + " Running\n");*/
                         AGHistory+=") " + currProcess.name + " Running\n";
                         /////////////////////////////////////////////////////////
                         totalTime += currProcess.burstTime;
@@ -284,17 +267,15 @@ public class Scheduling {
                         /*System.out.print("Quantum (");*/
                         AGHistory+="Quantum (";
                         for (int j = 0; j < result.size(); j++) {
-                            if (j == result.size() - 1) /*System.out.print(result.get(j).quantumTime);*/AGHistory+=result.get(j).quantumTime;
-                            else /*System.out.print(result.get(j).quantumTime + ",");*/AGHistory+=result.get(j).quantumTime + ",";
+                            if (j == result.size() - 1)AGHistory+=result.get(j).quantumTime;
+                            else AGHistory+=result.get(j).quantumTime + ",";
                         }
-                        //System.out.print(") ->  ceil(50%) = (");
                         AGHistory+=") ->  ceil(50%) = (";
                         for (int j = 0; j < result.size(); j++) {
                             if (j == result.size() - 1)
-                                /*System.out.print((int) Math.ceil(result.get(j).quantumTime / 2.0));*/AGHistory+=(int) Math.ceil(result.get(j).quantumTime / 2.0);
-                            else /*System.out.print((int) Math.ceil(result.get(j).quantumTime / 2.0) + ",");*/AGHistory+=(int) Math.ceil(result.get(j).quantumTime / 2.0) + ",";
+                                AGHistory+=(int) Math.ceil(result.get(j).quantumTime / 2.0);
+                            else AGHistory+=(int) Math.ceil(result.get(j).quantumTime / 2.0) + ",";
                         }
-                       // System.out.print(") " + currProcess.name + " Running\n");
                         AGHistory+=") " + currProcess.name + " Running\n";
                         /////////////////////////////////////////////////////////
                         totalTime += Math.ceil(currProcess.quantumTime / 2.0);
@@ -394,18 +375,11 @@ public class Scheduling {
             }
         }
         ////////////////////////////
-        //System.out.print("Quantum (");
         AGHistory+="Quantum (";
         for (int j = 0; j < result.size(); j++) {
-            if (j == result.size() - 1) /*System.out.print(result.get(j).quantumTime + ")\n");*/AGHistory+=result.get(j).quantumTime + ")\n";
-            else /*System.out.print(result.get(j).quantumTime + ",");*/AGHistory+=result.get(j).quantumTime + ",";
+            if (j == result.size() - 1) AGHistory+=result.get(j).quantumTime + ")\n";
+            else AGHistory+=result.get(j).quantumTime + ",";
         }
-        ///////////////////////////
-        /*for (int i = 0; i < dieList.size(); i++)
-            System.out.println("Process name: " + dieList.get(i).name + "  Waiting time: " + dieList.get(i).waitingTime + "  Turnaroundtime: " + dieList.get(i).turnaroundTime);
-        */
-        //////////////////////
-        //System.out.println(AGHistory);
         statistics=dieList;
         for(int i=0;i<statistics.size();i++){
             avg+=statistics.get(i).waitingTime;

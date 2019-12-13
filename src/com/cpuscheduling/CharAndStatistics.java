@@ -32,9 +32,9 @@ public class CharAndStatistics extends JFrame {
     private JPanel panel1;
     private JTabbedPane tabbedPane1;
     private JPanel chartPanelGUI;
-    private JTextPane AgHistory;
     private JTable processData;
     private JLabel AvgWaiting;
+    private JTextArea AgHistory;
     private DefaultTableModel tableModel = new DefaultTableModel();
     private static ArrayList<ChartTable>chartTable;
     public CharAndStatistics(ArrayList<ChartTable>chartTables) {
@@ -107,5 +107,6 @@ public class CharAndStatistics extends JFrame {
         }
         return collection;
     }
+
 
 }
