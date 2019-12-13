@@ -202,6 +202,7 @@ public class Scheduling {
         AGHistory="";
         ArrayList<Process> arrived = new ArrayList();
         ArrayList<Process> result = new ArrayList();
+        avg=0;
         Rang rang = new Rang();
         //ArrayList<ChartTable> Table=new ArrayList();
         for (int i = 0; i < arr.size(); i++)
@@ -239,7 +240,7 @@ public class Scheduling {
                         //System.out.print("Quantum (");
                         AGHistory+="Quantum (";
                         for (int j = 0; j < result.size(); j++) {
-                            if (j == result.size() - 1) System.out.print(result.get(j).quantumTime);
+                            if (j == result.size() - 1) /*System.out.print(result.get(j).quantumTime);*/AGHistory+=result.get(j).quantumTime;
                             else /*System.out.print(result.get(j).quantumTime + ",");*/AGHistory+=result.get(j).quantumTime + ",";
                         }
                         //System.out.print(") ->  ceil(50%) = (");
@@ -281,7 +282,7 @@ public class Scheduling {
                         /*System.out.print("Quantum (");*/
                         AGHistory+="Quantum (";
                         for (int j = 0; j < result.size(); j++) {
-                            if (j == result.size() - 1) System.out.print(result.get(j).quantumTime);
+                            if (j == result.size() - 1) /*System.out.print(result.get(j).quantumTime);*/AGHistory+=result.get(j).quantumTime;
                             else /*System.out.print(result.get(j).quantumTime + ",");*/AGHistory+=result.get(j).quantumTime + ",";
                         }
                         //System.out.print(") ->  ceil(50%) = (");
@@ -404,6 +405,10 @@ public class Scheduling {
         //////////////////////
         System.out.println(AGHistory);
         statistics=dieList;
+        for(int i=0;i<statistics.size();i++){
+            avg+=statistics.get(i).waitingTime;
+        }
+        avg=avg/(double)statistics.size();
     }
 
     private static ArrayList<Process> update(ArrayList<Process> arr, int totalTime) {
