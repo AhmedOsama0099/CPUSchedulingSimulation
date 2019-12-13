@@ -19,6 +19,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
@@ -31,6 +32,10 @@ public class CharAndStatistics extends JFrame {
     private JPanel panel1;
     private JTabbedPane tabbedPane1;
     private JPanel chartPanelGUI;
+    private JTextPane AgHistory;
+    private JTable processData;
+    private JLabel AvgWaiting;
+    private DefaultTableModel tableModel = new DefaultTableModel();
     private static ArrayList<ChartTable>chartTable;
     public CharAndStatistics(ArrayList<ChartTable>chartTables) {
         chartTable=chartTables;
@@ -43,7 +48,7 @@ public class CharAndStatistics extends JFrame {
         final JFreeChart chart = ChartFactory.createGanttChart(
                 "CPU Scheduling",  // chart title
                 "Process",              // domain axis label
-                "BurstTime",              // range axis label
+                "Time",              // range axis label
                 dataset,             // data
                 true,                // include legend
                 false,                // tooltips
@@ -55,6 +60,19 @@ public class CharAndStatistics extends JFrame {
         chartPanel.setDomainZoomable(true);
         chartPanelGUI.setLayout(new BorderLayout());
         chartPanelGUI.add(chartPanel, BorderLayout.NORTH);
+        setStatistics();
+    }
+
+    private void setStatistics() {
+        AgHistory.setText(Scheduling.AGHistory);
+        AvgWaiting.setText(String.valueOf(Scheduling.avg));
+        processData.setModel(tableModel);
+        tableModel.addColumn("Name");
+        tableModel.addColumn("WaitingTime");
+        tableModel.addColumn("TurnaroundTime");
+        for(int i=0;i<Scheduling.statistics.size();i++){
+            tableModel.insertRow(tableModel.getRowCount(), new Object[]{Scheduling.statistics.get(i).name,Scheduling.statistics.get(i).waitingTime,Scheduling.statistics.get(i).turnaroundTime});
+        }
     }
 
     private void setColors(JFreeChart chart) {

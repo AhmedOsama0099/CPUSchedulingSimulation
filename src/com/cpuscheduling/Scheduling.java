@@ -9,7 +9,7 @@ public class Scheduling {
     public static ArrayList<Process> statistics = new ArrayList<>();
     public static String AGHistory="";
     public static void SJF(ArrayList<Process> arr) {
-
+        AGHistory="";
         Collections.sort(arr, Comparator.comparing(process -> process.arrivalTime));
         //ArrayList<Process> statistics = new ArrayList<>();
         avg = 0;
@@ -37,7 +37,7 @@ public class Scheduling {
             rang.low = totalTime;
             totalTime += currProcess.burstTime;
             rang.high = totalTime;
-            currProcess.waitingTime = totalTime - currProcess.forStat.burstTime - currProcess.arrivalTime;
+            currProcess.forStat.waitingTime = totalTime - currProcess.burstTime - currProcess.arrivalTime;
             currProcess.chartTable.Rang_Arr.add(rang);
             rang = new Rang();
             currProcess.burstTime = 0;
@@ -63,6 +63,7 @@ public class Scheduling {
     }
 
     public static void Priority(ArrayList<Process> arr) {
+        AGHistory="";
         Collections.sort(arr, Comparator.comparing(process -> process.arrivalTime));
         avg = 0;
         statistics.clear();
@@ -120,6 +121,7 @@ public class Scheduling {
     }
 
     public static void SRTF(ArrayList<Process> arr) {
+        AGHistory="";
         Collections.sort(arr, Comparator.comparing(process -> process.arrivalTime));
         //ArrayList<Process> statistics = new ArrayList<>();
         avg = 0;
@@ -403,7 +405,7 @@ public class Scheduling {
             System.out.println("Process name: " + dieList.get(i).name + "  Waiting time: " + dieList.get(i).waitingTime + "  Turnaroundtime: " + dieList.get(i).turnaroundTime);
         */
         //////////////////////
-        System.out.println(AGHistory);
+        //System.out.println(AGHistory);
         statistics=dieList;
         for(int i=0;i<statistics.size();i++){
             avg+=statistics.get(i).waitingTime;
