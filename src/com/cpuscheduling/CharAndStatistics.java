@@ -35,6 +35,7 @@ public class CharAndStatistics extends JFrame {
     private JTable processData;
     private JLabel AvgWaiting;
     private JTextArea AgHistory;
+    private JLabel avgTurnRound;
     private DefaultTableModel tableModel = new DefaultTableModel();
     private static ArrayList<ChartTable>chartTable;
     public CharAndStatistics(ArrayList<ChartTable>chartTables) {
@@ -65,7 +66,9 @@ public class CharAndStatistics extends JFrame {
 
     private void setStatistics() {
         AgHistory.setText(Scheduling.AGHistory);
+
         AvgWaiting.setText(String.valueOf(Scheduling.avg));
+        avgTurnRound.setText(String.valueOf(Scheduling.avgTurnRound));
         processData.setModel(tableModel);
         tableModel.addColumn("Name");
         tableModel.addColumn("WaitingTime");
@@ -107,6 +110,7 @@ public class CharAndStatistics extends JFrame {
         }
         return collection;
     }
+
 
 
 }

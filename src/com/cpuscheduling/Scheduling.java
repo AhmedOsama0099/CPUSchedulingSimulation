@@ -6,12 +6,14 @@ import java.util.Comparator;
 
 public class Scheduling {
     public static double avg = 0;
+    public static  double avgTurnRound=0;
     public static ArrayList<Process> statistics = new ArrayList<>();
     public static String AGHistory="";
     public static void SJF(ArrayList<Process> arr) {
         AGHistory="";
         Collections.sort(arr, Comparator.comparing(process -> process.arrivalTime));
         avg = 0;
+        avgTurnRound=0;
         statistics.clear();
         for (int i = 0; i < arr.size(); i++) {
             statistics.add(arr.get(i).forStat);
@@ -31,7 +33,6 @@ public class Scheduling {
         currProcess = readyQueue.get(0);
         int totalTime = currProcess.arrivalTime;
         Rang rang = new Rang();
-
         while (readyQueue.size() > 0) {
             rang.low = totalTime;
             totalTime += currProcess.burstTime;
@@ -50,18 +51,27 @@ public class Scheduling {
             Collections.sort(readyQueue, Comparator.comparing(process -> process.burstTime));
             if (readyQueue.size() != 0)
                 currProcess = readyQueue.get(0);
+            if(readyQueue.isEmpty()&&!arr.isEmpty()){/**/
+                totalTime=arr.get(0).arrivalTime;
+                currProcess=arr.get(0);
+                readyQueue.add(currProcess);
+                arr.remove(0);
+            }
         }
         for (int i = 0; i < statistics.size(); i++) {
             statistics.get(i).turnaroundTime = statistics.get(i).waitingTime + statistics.get(i).burstTime;
             avg += statistics.get(i).waitingTime;
+            avgTurnRound+=statistics.get(i).turnaroundTime;
         }
         avg = avg / (double) statistics.size();
+        avgTurnRound=avgTurnRound/(double)statistics.size();
     }
 
     public static void Priority(ArrayList<Process> arr) {
         AGHistory="";
         Collections.sort(arr, Comparator.comparing(process -> process.arrivalTime));
         avg = 0;
+        avgTurnRound=0;
         statistics.clear();
         for (int i = 0; i < arr.size(); i++) {
             statistics.add(arr.get(i).forStat);
@@ -104,18 +114,27 @@ public class Scheduling {
             Collections.sort(readyQueue, Comparator.comparing((Process process) -> process.priority).thenComparing(process -> process.arrivalTime));
             if (readyQueue.size() != 0)
                 currProcess = readyQueue.get(0);
+            if(readyQueue.isEmpty()&&!arr.isEmpty()){/**/
+                totalTime=arr.get(0).arrivalTime;
+                currProcess=arr.get(0);
+                readyQueue.add(currProcess);
+                arr.remove(0);
+            }
         }
         for (int i = 0; i < statistics.size(); i++) {
             statistics.get(i).turnaroundTime = statistics.get(i).waitingTime + statistics.get(i).burstTime;
             avg += statistics.get(i).waitingTime;
+            avgTurnRound+=statistics.get(i).turnaroundTime;
         }
         avg = avg / (double) statistics.size();
+        avgTurnRound=avgTurnRound/(double)statistics.size();
     }
 
     public static void SRTF(ArrayList<Process> arr) {
         AGHistory="";
         Collections.sort(arr, Comparator.comparing(process -> process.arrivalTime));
         avg = 0;
+        avgTurnRound+=0;
         statistics.clear();
         for (int i = 0; i < arr.size(); i++) {
             statistics.add(arr.get(i).forStat);
@@ -179,19 +198,29 @@ public class Scheduling {
                 rang = new Rang();
                 rang.low = totalTime;
             }
+            if(readyQueue.isEmpty()&&!arr.isEmpty()){/**/
+                totalTime=arr.get(0).arrivalTime;
+                currProcess=arr.get(0);
+                readyQueue.add(currProcess);
+                arr.remove(0);
+            }
         }
         for (int i = 0; i < statistics.size(); i++) {
             statistics.get(i).turnaroundTime = statistics.get(i).waitingTime + statistics.get(i).burstTime;
             avg += statistics.get(i).waitingTime;
+            avgTurnRound+=statistics.get(i).turnaroundTime;
         }
         avg = avg / (double) statistics.size();
+        avgTurnRound=avgTurnRound/(double)statistics.size();
     }
+
 
     public static void AG(ArrayList<Process> arr) {
         AGHistory="";
         ArrayList<Process> arrived = new ArrayList();
         ArrayList<Process> result = new ArrayList();
         avg=0;
+        avgTurnRound=0;
         Rang rang = new Rang();
         for (int i = 0; i < arr.size(); i++)
             result.add(new Process(arr.get(i).name, arr.get(i).burstTime, arr.get(i).arrivalTime, arr.get(i).priority, arr.get(i).quantumTime));
@@ -237,7 +266,7 @@ public class Scheduling {
                             else AGHistory+=(int) Math.ceil(result.get(j).quantumTime / 2.0) + ",";
                         }
                         AGHistory+=") " + currProcess.name + " Running\n";
-                        /////////////////////////////////////////////////////////
+                        /////////////////////////////////////////////////////////1     5
                         totalTime += currProcess.burstTime;
                         //////////
                         rang.high = totalTime;
@@ -257,9 +286,14 @@ public class Scheduling {
                         dieList.add(currProcess);
                         arr.remove(currProcess);
                         arrived.remove(currProcess);
-                        if (queue.isEmpty()) break;
-                        currProcess = queue.get(0);
-                        queue.remove(0);
+                        if (queue.isEmpty()){
+                            Process temp=pickProcess(arr,totalTime);
+                            if(temp==null)continue;
+                            else currProcess=temp;
+                        }else{
+                            currProcess = queue.get(0);
+                            queue.remove(0);
+                        }
                         i = 0;
                         continue;
                     } else {
@@ -312,8 +346,9 @@ public class Scheduling {
                             rang = new Rang();
                             rang.low = totalTime;
                             //////////
-                            currProcess = pickProcess(arr, totalTime);
-                            break;
+                            Process temp=pickProcess(arr,totalTime);
+                            if(temp==null)continue;
+                            else currProcess=temp;
                         } else {
                             currProcess = queue.get(0);
                         }
@@ -337,7 +372,6 @@ public class Scheduling {
                         queue.add(currProcess);
                         currProcess = queue.get(0);
                         queue.remove(0);
-
                         nonPrimitative = true;
                         i = 0;
                         continue;
@@ -365,7 +399,6 @@ public class Scheduling {
                             nonPrimitative = true;
                             i = 0;
                         } else {
-
                             currProcess.burstTime -= 1;
                             totalTime++;
                             i++;
@@ -383,9 +416,12 @@ public class Scheduling {
         statistics=dieList;
         for(int i=0;i<statistics.size();i++){
             avg+=statistics.get(i).waitingTime;
+            avgTurnRound+=statistics.get(i).turnaroundTime;
         }
         avg=avg/(double)statistics.size();
+        avgTurnRound+=avgTurnRound/(double)statistics.size();
     }
+
 
     private static ArrayList<Process> update(ArrayList<Process> arr, int totalTime) {
         ArrayList<Process> arrived = new ArrayList<>();
